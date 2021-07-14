@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import br.com.teste.sicredi.exceptions.EntidadeNotFoundException;
+import br.com.teste.sicredi.exceptions.IdInvalidException;
 
 @ControllerAdvice
 public class EntidadeNotFoundAdvice {
@@ -15,6 +16,13 @@ public class EntidadeNotFoundAdvice {
 	@ExceptionHandler(EntidadeNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public String entidadeNotFoundHandler(EntidadeNotFoundException ex) {
+		return ex.getMessage();
+	}
+
+	@ResponseBody
+	@ExceptionHandler(IdInvalidException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public String entidadeNotFoundHandler(IdInvalidException ex) {
 		return ex.getMessage();
 	}
 }

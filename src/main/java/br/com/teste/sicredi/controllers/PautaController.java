@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.teste.sicredi.entities.Pauta;
 import br.com.teste.sicredi.exceptions.EntidadeNotFoundException;
+import br.com.teste.sicredi.exceptions.IdInvalidException;
 import br.com.teste.sicredi.repositories.PautaRepository;
 
 @RestController
@@ -31,7 +32,10 @@ public class PautaController {
 
 	@GetMapping("/v1.0/{id}")
 	public Pauta list(@PathVariable String id) {
-		return pautaRepository.findById(new ObjectId(id)).orElseThrow(() -> new EntidadeNotFoundException(id));
+		if (ObjectId.isValid(id)) {
+			return pautaRepository.findById(new ObjectId(id)).orElseThrow(() -> new EntidadeNotFoundException(id));
+		}
+		throw new IdInvalidException(id);
 	}
 
 	@PostMapping("/v1.0")
@@ -41,9 +45,12 @@ public class PautaController {
 
 	@PutMapping("/v1.0")
 	public Pauta update(@RequestBody Pauta pauta) {
-		final ObjectId id = new ObjectId(pauta.getId());
-		pautaRepository.findById(id).orElseThrow(() -> new EntidadeNotFoundException(pauta.getId()));
-		return pautaRepository.save(pauta);
+		if (ObjectId.isValid(pauta.getId())) {
+			final ObjectId id = new ObjectId(pauta.getId());
+			pautaRepository.findById(id).orElseThrow(() -> new EntidadeNotFoundException(pauta.getId()));
+			return pautaRepository.save(pauta);
+		}
+		throw new IdInvalidException(pauta.getId());
 	}
 
 	@DeleteMapping("/v1.0/{id}")
