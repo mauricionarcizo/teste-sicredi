@@ -8,6 +8,7 @@ public class TesteSicrediApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TesteSicrediApplication.class, args);
+		System.out.println("Teste auto deploy heroku");
 	}
 
 }
