@@ -19,7 +19,7 @@ import br.com.teste.sicredi.exceptions.SessaoVotacaoNotFoundException;
 import br.com.teste.sicredi.exceptions.SessaoVotacaoNotStartedException;
 
 @ControllerAdvice
-public class EntidadeNotFoundAdvice {
+public class ExceptionsAdvice {
 
 	@ResponseBody
 	@ExceptionHandler(PautaNotFoundException.class)
