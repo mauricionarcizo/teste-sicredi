@@ -40,8 +40,9 @@ public class SessaoService {
 		if (ObjectUtils.isEmpty(sessao.getSessaoId())) {
 			sessao.setSessaoId(UUID.randomUUID().toString());
 		} else {
-			sessaoRepository.findBySessaoId(sessao.getSessaoId())
-					.orElseThrow(() -> new SessaoDuplicatedException(sessao.getSessaoId()));
+			if (sessaoRepository.findBySessaoId(sessao.getSessaoId()).isPresent()) {
+				new SessaoDuplicatedException(sessao.getSessaoId());
+			}
 		}
 		return sessaoRepository.save(sessao);
 	}

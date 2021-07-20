@@ -2,7 +2,6 @@ package br.com.teste.sicredi.services;
 
 import java.util.List;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -34,7 +33,7 @@ public class AssociadoVotoService {
 	private RestTemplate restTemplate;
 
 	public void sessaoVotacaoVotar(final String idSessao, final String cpf, final boolean aceitaPauta) {
-		Sessao sessao = sessaoRepository.findById(new ObjectId(idSessao))
+		Sessao sessao = sessaoRepository.findBySessaoId(idSessao)
 				.orElseThrow(() -> new SessaoVotacaoNotFoundException(idSessao));
 
 		if (sessao.getVotacao() == null || sessao.getVotacao().getDataAbertura() == null) {
@@ -57,7 +56,7 @@ public class AssociadoVotoService {
 	}
 
 	public AssociadoVotosDTO contabilizarVotos(String idSessao) {
-		Sessao sessao = sessaoRepository.findById(new ObjectId(idSessao))
+		Sessao sessao = sessaoRepository.findBySessaoId(idSessao)
 				.orElseThrow(() -> new SessaoVotacaoNotFoundException(idSessao));
 		if (sessao.getVotacao() == null || sessao.getVotacao().getDataAbertura() == null) {
 			throw new SessaoVotacaoNotStartedException(idSessao);
