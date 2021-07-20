@@ -10,7 +10,9 @@ import br.com.teste.sicredi.exceptions.AssociadoUnableToVoteException;
 import br.com.teste.sicredi.exceptions.AssociadoVotoDuplicatedException;
 import br.com.teste.sicredi.exceptions.CpfInvalidException;
 import br.com.teste.sicredi.exceptions.IdInvalidException;
+import br.com.teste.sicredi.exceptions.PautaDuplicatedException;
 import br.com.teste.sicredi.exceptions.PautaNotFoundException;
+import br.com.teste.sicredi.exceptions.SessaoDuplicatedException;
 import br.com.teste.sicredi.exceptions.SessaoNotFoundException;
 import br.com.teste.sicredi.exceptions.SessaoVotacaoAlreadyStartedException;
 import br.com.teste.sicredi.exceptions.SessaoVotacaoFinishedException;
@@ -79,7 +81,7 @@ public class ExceptionsAdvice {
 
 	@ResponseBody
 	@ExceptionHandler(CpfInvalidException.class)
-	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public String cpfInvalid(CpfInvalidException ex) {
 		return ex.getMessage();
 	}
@@ -97,4 +99,19 @@ public class ExceptionsAdvice {
 	public String idInvalid(IdInvalidException ex) {
 		return ex.getMessage();
 	}
+
+	@ResponseBody
+	@ExceptionHandler(SessaoDuplicatedException.class)
+	@ResponseStatus(HttpStatus.CONFLICT)
+	public String sessaoDuplicated(SessaoDuplicatedException ex) {
+		return ex.getMessage();
+	}
+
+	@ResponseBody
+	@ExceptionHandler(PautaDuplicatedException.class)
+	@ResponseStatus(HttpStatus.CONFLICT)
+	public String pautaDuplicated(PautaDuplicatedException ex) {
+		return ex.getMessage();
+	}
+
 }

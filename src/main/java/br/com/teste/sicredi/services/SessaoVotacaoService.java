@@ -22,7 +22,7 @@ public class SessaoVotacaoService {
 
 	@Autowired
 	private SessaoRepository sessaoRepository;
-	
+
 	@Autowired
 	private ThreadPoolTaskScheduler scheduler;
 
@@ -30,11 +30,11 @@ public class SessaoVotacaoService {
 		isIdValid(idSessao);
 		final ObjectId objIdSessao = new ObjectId(idSessao);
 		Sessao sessao = sessaoRepository.findById(objIdSessao).orElseThrow(() -> new SessaoNotFoundException(idSessao));
-		
-		if(sessao.getVotacao() != null) {
-			throw new SessaoVotacaoAlreadyStartedException(idSessao);			
+
+		if (sessao.getVotacao() != null) {
+			throw new SessaoVotacaoAlreadyStartedException(idSessao);
 		}
-		if(sessao.getVotacao() != null && sessao.getVotacao().isEncerrado()) {
+		if (sessao.getVotacao() != null && sessao.getVotacao().isEncerrado()) {
 			throw new SessaoVotacaoFinishedException(idSessao);
 		}
 

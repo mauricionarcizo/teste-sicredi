@@ -1,14 +1,16 @@
 package br.com.teste.sicredi.services;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import br.com.teste.sicredi.entities.Pauta;
+import br.com.teste.sicredi.exceptions.PautaDuplicatedException;
 import br.com.teste.sicredi.exceptions.PautaNotFoundException;
-import br.com.teste.sicredi.exceptions.IdInvalidException;
 import br.com.teste.sicredi.repositories.PautaRepository;
 
 @Service
@@ -21,32 +23,28 @@ public class PautaService {
 		return pautaRepository.findAll();
 	}
 
-	public Pauta get(final String id) {
-		isIdValid(id);
-		return pautaRepository.findById(new ObjectId(id)).orElseThrow(() -> new PautaNotFoundException(id));
+	public Pauta get(final String pautaId) {
+		return pautaRepository.findByPautaId(pautaId).orElseThrow(() -> new PautaNotFoundException(pautaId));
 	}
 
 	public Pauta add(final Pauta pauta) {
+		if (ObjectUtils.isEmpty(pauta.getPautaId())) {
+			pauta.setPautaId(UUID.randomUUID().toString());
+		}else {
+			pautaRepository.findByPautaId(pauta.getPautaId())
+			.orElseThrow(() -> new PautaDuplicatedException(pauta.getPautaId()));
+		}
 		return pautaRepository.save(pauta);
 	}
 
 	public Pauta update(final Pauta pauta) {
-		isIdValid(pauta.getId());
-		final ObjectId id = new ObjectId(pauta.getId());
-		pautaRepository.findById(id).orElseThrow(() -> new PautaNotFoundException(pauta.getId()));
+		pautaRepository.findByPautaId(pauta.getPautaId())
+				.orElseThrow(() -> new PautaNotFoundException(pauta.getPautaId()));
 		return pautaRepository.save(pauta);
 	}
 
-	public void delete(final String id) {
-		isIdValid(id);
-		ObjectId objId = new ObjectId(id);
-		pautaRepository.findById(objId).orElseThrow(() -> new PautaNotFoundException(id));
-		pautaRepository.deleteById(objId);
-	}
-
-	private void isIdValid(final String id) {
-		if (!ObjectId.isValid(id)) {
-			throw new IdInvalidException(id);
-		}
+	public void delete(final String pautaId) {
+		Pauta pauta = pautaRepository.findByPautaId(pautaId).orElseThrow(() -> new PautaNotFoundException(pautaId));
+		pautaRepository.deleteById(new ObjectId(pauta.getId()));
 	}
 }
